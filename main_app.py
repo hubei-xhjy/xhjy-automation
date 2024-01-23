@@ -36,11 +36,13 @@ class APP:
         print("Welcome to XHJY-automation tool.")
         while True:
             print("")
-            print(DEBUG_MODE_ASCII) if self.debug_mode else None
             print("==============================================================")
+            print(DEBUG_MODE_ASCII) if self.debug_mode else None
             print("========================= Automations ========================")
             print("A1. Test Berachain Automation                                 ")
             print("A2. [Scheduled] GitHub Automation (commits, fork, stars, etc.)")
+            print("========================= Analytics ==========================")
+            print("An1. [Scheduled] Analysis BTC pass-year's                     ")
             print("========================= Converters =========================")
             print("C1. Convert Twitter list purchased from Twitter888.cn         ")
             print("========================= Systems ============================")
