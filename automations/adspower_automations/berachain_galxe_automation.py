@@ -1,4 +1,5 @@
 # Opened AdsPower (for batch automations)
+
 import automations.adspower_automations.ads_browser_unit
 
 opened_browsers = []
@@ -14,18 +15,13 @@ def run(ads_host: str, ads_key: str, debug_mode: bool = False):
         browser = automations.adspower_automations.ads_browser_unit.AdsBrowserUnit(
             ads_host, ads_key, machine_id)
         # Save current opened browser for operation
-        current_opened_browser = browser.start(debug_mode)
-        opened_browsers.append(current_opened_browser)
+        browser.start(debug_mode)
+        opened_browsers.append(browser)
         print(f"DEBUG: Created an AdsPower Browser with {browser.user_id}") if debug_mode else None
 
-        # Just do the automation one by one.
-        print(f"DEBUG: Doing the automation one by one") if debug_mode else None
-        # With selenium package
-        selenium_address = current_opened_browser['data']['ws']['selenium']
-        print(selenium_address)
-        # Set Chrome options to specify the debugging address
-        chrome_options = Options()
-
+        # Control the browser
+        # Open a website
+        browser.open_website('https://github.com')
 
 class BerachainGalxeAutomation:
     def __init__(self):
