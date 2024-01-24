@@ -24,6 +24,8 @@ COND_CONTAINS = 'CONTAINS'
 COND_NOT_CONTAINS = 'NOT_CONTAINS'
 
 BY_CSS = 'CSS'
+BY_ID = 'ID'
+BY_NAME = 'NAME'
 BY_XPATH = 'XPATH'
 BY_TEXT = 'TEXT'
 
@@ -80,6 +82,13 @@ class AdsBrowserUnit:
             print(f"DEBUG: [Human Like] Waiting {wait_time} seconds.") if self.debug_mode else None
             time.sleep(wait_time)
 
+    def __mimic_human_long_wait__(self):
+        if self.human_like:
+            # Wait in range 300 to 1000
+            wait_time = random.randrange(700, 2000) / 1000
+            print(f"DEBUG: [Human Like] Waiting {wait_time} seconds.") if self.debug_mode else None
+            time.sleep(wait_time)
+
     def __connect_selenium__(self, browser_data: {}):
         """
         open ads browser and save the driver in cache.
@@ -103,6 +112,10 @@ class AdsBrowserUnit:
             elements = None
             if by == BY_CSS:
                 elements = self.driver.find_elements(By.CSS_SELECTOR, value)
+            elif by == BY_NAME:
+                elements = self.driver.find_elements(By.NAME, value)
+            elif by == BY_ID:
+                elements = self.driver.find_elements(By.ID, value)
             elif by == BY_XPATH:
                 elements = self.driver.find_elements(By.XPATH, value)
             elif by == BY_TEXT:
@@ -214,6 +227,7 @@ class AdsBrowserUnit:
         self.__mimic_human_wait__()
 
     def hover_element(self, search_by: str, search_value, sel_type: str = SEL_TYPE_FIXED, order: int = 1, order_max = 1):
+        print(f"DEBUG: Hovering element {search_value} by {search_by}") if self.debug_mode else None
         ele = self.__element_selector__(search_by, search_value, sel_type, order, order_max)
         ActionChains(self.driver).move_to_element(ele).perform()
         self.__mimic_human_wait__()
@@ -226,3 +240,94 @@ class AdsBrowserUnit:
         # For develop documentation, please visit: https://www.browserstack.com/guide/select-class-in-selenium
         pass
 
+    def focus_element(self, search_by: str, search_value, sel_type: str = SEL_TYPE_FIXED, order: int = 1, order_max = 1):
+        print(f"DEBUG: Focusing element {search_value} by {search_by}") if self.debug_mode else None
+        ele = self.hover_element(search_by, search_value, sel_type, order, order_max)
+        ele.click()
+        self.__mimic_human_wait__()
+
+    def click_element(self, search_by: str, search_value, sel_type: str = SEL_TYPE_FIXED, order: int = 1 , order_max = 1):
+        print(f"DEBUG: Clicking element {search_value} by {search_by}") if self.debug_mode else None
+        ele = self.hover_element(search_by, search_value, sel_type, order, order_max)
+        ele.click()
+        self.__mimic_human_wait__()
+
+    def get_element(self, search_by: str, search_value, sel_type: str = SEL_TYPE_FIXED, order: int = 1, order_max = 1):
+        """
+        Get an element exists in the browser
+        :param search_by:
+        :param search_value:
+        :param sel_type:
+        :param order:
+        :param order_max:
+        :return:
+        """
+        print(f"DEBUG: Getting element {search_by} by {search_value}") if self.debug_mode else None
+        self.__mimic_human_wait__()
+        return self.__element_selector__(search_by, search_value, sel_type, order, order_max)
+
+    def input(self, string_to_input: str, search_by: str, search_value,
+              sel_type: str = SEL_TYPE_FIXED, order: int = 1, order_max = 1,
+              input_interval = 150):
+        print(f"DEBUG: Input {string_to_input} to {search_value} by {search_by}") if self.debug_mode else None
+        target_element = self.get_element(search_by, search_value, sel_type, order, order_max)
+        if self.human_like:
+            # Input character one by one randomly waiting time
+            for char in string_to_input:
+                waiting_time = random.randint(150, 250) / 1000
+                time.sleep(waiting_time)
+                target_element.send_keys(char)
+            pass
+        else:
+            # Input character in a specified speed
+            waiting_time = input_interval / 1000
+            for char in string_to_input:
+                time.sleep(waiting_time)
+                target_element.send_keys(char)
+            pass
+        self.__mimic_human_wait__()
+
+    def scroll_to_element(self, search_by: str, search_value, sel_type: str = SEL_TYPE_FIXED, order: int = 1, order_max = 1):
+        ele = self.get_element(search_by, search_value, sel_type, order, order_max)
+        ActionChains(self.driver).move_to_element(ele)
+
+    def __scroll_down__(self, distance: int, distance_between: int):
+        total_scrolled = 0
+        next_scroll_distance = total_scrolled
+        min_dist_between_scrolls = 300
+        max_dist_between_scrolls = 500
+        while total_scrolled < distance:
+            next_scroll_distance += random.randint(min_dist_between_scrolls, max_dist_between_scrolls)
+            scroll_distance = next_scroll_distance - total_scrolled
+            for i in range(scroll_distance):
+                self.driver.execute_script(f'window.scrollBy(0, {i})')
+                total_scrolled += i
+                if total_scrolled >= distance / 2:
+                    last_no = i
+                    break
+            for i in range(last_no, 0, -1):
+                self.driver.execute_script(f"window.scrollBy(0, {i})")
+            self.__mimic_human_long_wait__()
+
+    def scroll(self, distance: int, distance_max: int = 0):
+        min_dist_between_scrolls = 100
+        max_dist_between_scrolls = 200
+        min_delay_between_scrolls = 0.1
+        max_delay_between_scrolls = 0.5
+
+        total_distance = random.randint(distance, distance_max) if distance_max > distance else distance
+
+        scrolled = 0
+        while scrolled < total_distance:
+            # 确保滚动距离范围有效
+            max_scroll_dist = min(max_dist_between_scrolls, total_distance - scrolled)
+            if max_scroll_dist < min_dist_between_scrolls:
+                break
+
+            scroll_distance = random.randint(min_dist_between_scrolls, max_scroll_dist)
+            delay = random.uniform(min_delay_between_scrolls, max_delay_between_scrolls)
+
+            self.driver.execute_script(f"window.scrollBy(0, {scroll_distance})")
+
+            scrolled += scroll_distance
+            time.sleep(delay)
