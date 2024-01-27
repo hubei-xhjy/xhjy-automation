@@ -25,7 +25,7 @@ class APP:
     human_like = True
     ads_host = ""
     ads_key = ""
-    opened_browser_data = []
+    current_working_machines = [0]
 
     def __init__(self, ads_host, ads_key):
         self.ads_host = ads_host
@@ -36,28 +36,31 @@ class APP:
         print("Welcome to XHJY-automation tool.")
         while True:
             print("")
-            print("==============================================================")
+            print("=================================================================")
             print(DEBUG_MODE_ASCII) if self.debug_mode else None
             print(HUMAN_LIKE_ASCII) if self.human_like else None
-            print("========================= Automations ========================")
-            print("A1. Test Berachain Automation                                 ")
-            print("A2. [Scheduled] GitHub Automation (commits, fork, stars, etc.)")
-            print("========================= Analytics ==========================")
-            print("An1. [Scheduled] Analysis BTC pass-year's                     ")
-            print("========================= Converters =========================")
-            print("C1. Convert Twitter list purchased from Twitter888.cn         ")
-            print("========================= Systems ============================")
-            print("Debug. DEBUG MODE                                             ") if self.debug_mode else None
-            print("Debug. Debug Mode                                             ") if not self.debug_mode else None
-            print("Human. HUMAN LIKE (Will wait for a while before continuing)   ") if self.human_like else None
-            print("Human. Human Like (Will wait for a while before continuing)   ") if not self.human_like else None
-            print("Q    . Exit Application                                       ")
-            print("==============================================================")
+            print("========================= Automations ===========================")
+            print("A1. Test Berachain Automation                                    ")
+            print("A2. [Scheduled] GitHub Automation (commits, fork, stars, etc.)   ")
+            print("A3. Twitter login                                                ")
+            print("========================= Analytics =============================")
+            print("An1. [Scheduled] Analysis BTC pass-year's                        ")
+            print("========================= Converters ============================")
+            print("C1. Convert Twitter list purchased from Twitter888.cn            ")
+            print("========================= Systems ===============================")
+            print("Debug. DEBUG MODE                                                ") if self.debug_mode else None
+            print("Debug. Debug Mode                                                ") if not self.debug_mode else None
+            print("Human. HUMAN LIKE (Will wait for a while before continuing)      ") if self.human_like else None
+            print("Human. Human Like (Will wait for a while before continuing)      ") if not self.human_like else None
+            print("Q    . Exit Application                                          ")
+            print("=================================================================")
             choice = input("Please choose an option: ").lower()
 
             if choice == "a1":
                 print("DEBUG: Running Berachain Automation") if self.debug_mode else None
                 berachain_automation.run(self.ads_host, self.ads_key, self.human_like, self.debug_mode)
+            elif choice == "a3":
+                print(f"DEBUG: Running Twitter Login with accounts: {[]}") if self.debug_mode else None
             elif choice == "c1":
                 print("DEBUG: Running Twitter Account List Converter") if self.debug_mode else None
                 convert_twitter_list()
