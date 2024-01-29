@@ -62,7 +62,7 @@ class AdsBrowserUnit:
                 chromium_options.add_experimental_option('debuggerAddress', selenium_address)
                 print(f"DEBUG: Set the webdriver path to chromedriver") if self.debug_mode else None
                 service = ChromiumService(webdriver_path)
-                print(f"DEBUG: Create a webdriver instance")
+                print(f"DEBUG: Create a webdriver instance") if self.debug_mode else None
                 self.driver = ChromiumDriver(service=service, options=chromium_options)
         except URLError as e:
             print(f"ERROR: URLError {e.reason}")
